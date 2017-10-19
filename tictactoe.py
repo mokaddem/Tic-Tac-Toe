@@ -5,7 +5,6 @@ import time
 import socket
 import json
 import argparse
-import npyscreen
 
 GRIDSIZE = 3
 EMPTY = 0
@@ -18,8 +17,6 @@ GRIDTOSTRING = {
         2: 'O' 
         }
 
-theGame = None
-
 class game:
     def __init__(self, sock, HOST, PORT, server=False):
         self.server = server
@@ -30,7 +27,6 @@ class game:
         self.sock = sock
         self.grid = [[EMPTY for i in range(GRIDSIZE)] for i in range(GRIDSIZE)]
         self.playingPlayer = PLAYERX
-        self.startGame()
 
     def bind_cient(self):
         print('waiting client')
@@ -104,10 +100,10 @@ class game:
     def victory(self, me):
         if not me:
             print('Victory!')
-            sys.exit(0)
+            self.gameFinished = True
         else:
-            print('Defeat..')
-            sys.exit(0)
+            print('Defeat...')
+            self.gameFinished = True
 
     def checkDraw(self):
         flag_not_stuck = False
@@ -117,7 +113,7 @@ class game:
                     flag_not_stuck = True
         if not flag_not_stuck:
             print('Draw!')
-            sys.exit(0)
+            self.gameFinished = True
 
     def checkVictory(self, row, col):
         #check if previous move caused a win on vertical line 
@@ -184,51 +180,25 @@ def getSock(HOST, PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     return sock
 
-    #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    #    sock.bind((HOST, PORT))
-    #    print('starting server at', (HOST, PORT))
-    #    sock.listen(1)
-    #    conn, addr = sock.accept()
-    #    with conn:
-    #        print('Connected by', addr)
-    #        while True:
-    #            data = conn.recv(1024)
-    #            if not data: 
-    #                break
-    #            else:
-    #                print('received', data)
-    #            conn.sendall(data)
-
-
 def client(HOST, PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     sock.connect((HOST, PORT))
     return sock
 
-    #with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-    #    print('connecting to', (HOST, PORT))
-    #    sock.connect((HOST, PORT))
-    #    sock.sendall(b'Hello, world')
-    #    data = sock.recv(1024)
-    #print('Received', repr(data))
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tic Tac Toe Game')
-    parser.add_argument('-s' '--server', dest='server', help='Is the server')
-    parser.add_argument('-c', '--client', help='Is the client')
+    parser.add_argument('-s' '--server', dest='server', help='Is the server', action='store_true')
     parser.add_argument('-n', '--host', help='hostname', default='localhost')
     parser.add_argument('-p', '--port', help='port', default=9876, type=int)
     
     args = parser.parse_args()
 
     sock = getSock(args.host, args.port)
-    if args.server is not None:
+    if args.server:
         g = game(sock, server=True, HOST=args.host, PORT=args.port)
     else:
         g = game(sock, server=False, HOST=args.host, PORT=args.port)
-    theGame = g
+    g.startGame()
 
-    #App = MyApplication()
-    #App.run()
     sock.close()
