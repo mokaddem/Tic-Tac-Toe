@@ -15,7 +15,7 @@ PLAYERY = 2
 GRIDTOSTRING = {
         0: ' ',
         1: 'X', 
-        2: 'Y' 
+        2: 'O' 
         }
 
 theGame = None
@@ -63,6 +63,7 @@ class game:
     def gameLoop(self):
         while not self.gameFinished:
             print(self)
+            self.checkDraw()
             if self.playingPlayer == self.currentPlayer:
                 coord = self.inputData()
                 self.addInput(coord)
@@ -98,12 +99,46 @@ class game:
             self.grid[row][col] = self.otherPlayer
             self.playingPlayer = self.currentPlayer
 
-        if self.doesSelfWin():
-            print("YOU WIN!")
-            sys.exit(1)
+        self.checkVictory(row, col)
 
-    def doesSelfWin(self):
-        return False
+    def victory(self, me):
+        if not me:
+            print('Victory!')
+            sys.exit(0)
+        else:
+            print('Defeat..')
+            sys.exit(0)
+
+    def checkDraw(self):
+        flag_not_stuck = False
+        for r in self.grid:
+            for v in r:
+                if v == EMPTY:
+                    flag_not_stuck = True
+        if not flag_not_stuck:
+            print('Draw!')
+            sys.exit(0)
+
+    def checkVictory(self, row, col):
+        #check if previous move caused a win on vertical line 
+        if self.grid[0][col] == self.grid[1][col] == self.grid[2][col]:
+            print(self)
+            self.victory(self.playingPlayer == self.currentPlayer)
+
+        #check if previous move caused a win on horizontal line 
+        if self.grid[row][0] == self.grid[row][1] == self.grid [row][2]:
+            print(self)
+            self.victory(self.playingPlayer == self.currentPlayer)
+
+        #check if previous move was on the main diagonal and caused a win
+        if row == col and self.grid[0][0] == self.grid[1][1] == self.grid [2][2]:
+            print(self)
+            self.victory(self.playingPlayer == self.currentPlayer)
+
+        #check if previous move was on the secondary diagonal and caused a win
+        if row + col == 2 and self.grid[0][2] == self.grid[1][1] == self.grid [2][0]:
+            print(self)
+            self.victory(self.playingPlayer == self.currentPlayer)
 
     def sendToPeer(self, to_send):
         self.sock.sendall(json.dumps(to_send).encode('utf8'))
