@@ -28,7 +28,7 @@ class game:
         self.host = HOST
         self.port = PORT
         self.sock = sock
-        self.grid = [[EMPTY, EMPTY, EMPTY] for i in range(GRIDSIZE)]
+        self.grid = [[EMPTY for i in range(GRIDSIZE)] for i in range(GRIDSIZE)]
         self.playingPlayer = PLAYERX
         self.startGame()
 
