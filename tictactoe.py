@@ -173,10 +173,10 @@ def getSock(HOST, PORT):
     return sock
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Tic Tac Toe Game')
-    parser.add_argument('-s' '--server', dest='server', help='Is the server', action='store_true')
-    parser.add_argument('-n', '--host', help='hostname', default='localhost')
-    parser.add_argument('-p', '--port', help='port', default=9876, type=int)
+    parser = argparse.ArgumentParser(description='The command line Tic-Tac-Toe Game')
+    parser.add_argument('-s', '--server', dest='server', help='Is this instance the server?', action='store_true')
+    parser.add_argument('-p', '--port', help='port number', default=9876, type=int)
+    parser.add_argument('--host', help='hostname', required=True)
     args = parser.parse_args()
 
     sock = getSock(args.host, args.port)
