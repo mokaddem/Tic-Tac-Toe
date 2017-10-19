@@ -41,7 +41,6 @@ class game:
     def connect_to_server(self):
         print('waiting server')
         self.sock.connect((self.host, self.port))
-        print('waiting server')
 
 
     def startGame(self):
@@ -62,7 +61,7 @@ class game:
             self.checkDraw()
             if self.playingPlayer == self.currentPlayer:
                 coord = self.inputData()
-                self.addInput(coord)
+                self.addInputToGrid(coord)
             else:
                 self.waitOtherPlayer()
 
@@ -81,7 +80,7 @@ class game:
                 continue
             return coord
 
-    def addInput(self, coord, remote=False):
+    def addInputToGrid(self, coord, remote=False):
         coord = coord.split(',')
         row = int(coord[0])
         col = int(coord[1])
@@ -152,7 +151,7 @@ class game:
                coord = data['coord']
                player = data['player']
                coordStr = coord[0] + ',' + coord[1]
-               self.addInput(coordStr, remote=True)
+               self.addInputToGrid(coordStr, remote=True)
                return
 
     def __repr__(self):
@@ -173,18 +172,10 @@ class game:
     def __str__(self):
         return self.__repr__()
 
-    def getInstance(self):
-        return self.grid
 
 def getSock(HOST, PORT):
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
     return sock
-
-def client(HOST, PORT):
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) 
-    sock.connect((HOST, PORT))
-    return sock
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Tic Tac Toe Game')
