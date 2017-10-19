@@ -64,14 +64,28 @@ class game:
         while not self.gameFinished:
             print(self)
             if self.playingPlayer == self.currentPlayer:
-                coord = input('coordinate of the grid (r,c):')
+                coord = self.inputData()
                 self.addInput(coord)
             else:
                 self.waitOtherPlayer()
 
+    def inputData(self):
+        while True:
+            coord = input('coordinate of the grid (r,c):')
+            try:
+                coordList = coord.split(',')
+                row = int(coordList[0])
+                col = int(coordList[1])
+                if self.grid[row][col] != EMPTY:
+                    print('Cell already taken')
+                    continue
+            except:
+                print('bad input')
+                continue
+            return coord
+
     def addInput(self, coord, remote=False):
         coord = coord.split(',')
-        print(coord)
         row = int(coord[0])
         col = int(coord[1])
 
@@ -96,6 +110,7 @@ class game:
 
     def waitOtherPlayer(self):
         print(self)
+        print('Waiting for other player...')
         while True:
            data = self.sock.recv(1024)
            if not data: 
