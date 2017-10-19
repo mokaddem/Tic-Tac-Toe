@@ -10,7 +10,6 @@ GRIDSIZE = 3
 EMPTY = 0
 PLAYERX = 1
 PLAYERY = 2
-
 GRIDTOSTRING = {
         0: ' ',
         1: 'X', 
@@ -36,12 +35,10 @@ class game:
         self.sock = conn
         self.addr = addr
         print("Connected to client")
-        
 
     def connect_to_server(self):
         print('waiting server')
         self.sock.connect((self.host, self.port))
-
 
     def startGame(self):
         if self.server == True:
@@ -52,7 +49,6 @@ class game:
             self.currentPlayer = PLAYERY
             self.otherPlayer = PLAYERX
             self.connect_to_server()
-
         self.gameLoop()
 
     def gameLoop(self):
@@ -93,7 +89,6 @@ class game:
         else:
             self.grid[row][col] = self.otherPlayer
             self.playingPlayer = self.currentPlayer
-
         self.checkVictory(row, col)
 
     def victory(self, me):
@@ -106,8 +101,8 @@ class game:
 
     def checkDraw(self):
         flag_not_stuck = False
-        for r in self.grid:
-            for v in r:
+        for row in self.grid:
+            for v in row:
                 if v == EMPTY:
                     flag_not_stuck = True
         if not flag_not_stuck:
@@ -166,7 +161,7 @@ class game:
             to_ret += '+---'*GRIDSIZE
             to_ret += '+\n'
 
-        os.system('clear')
+        os.system('clear') #Clear terminal
         return to_ret
 
     def __str__(self):
@@ -182,7 +177,6 @@ if __name__ == '__main__':
     parser.add_argument('-s' '--server', dest='server', help='Is the server', action='store_true')
     parser.add_argument('-n', '--host', help='hostname', default='localhost')
     parser.add_argument('-p', '--port', help='port', default=9876, type=int)
-    
     args = parser.parse_args()
 
     sock = getSock(args.host, args.port)
@@ -191,5 +185,4 @@ if __name__ == '__main__':
     else:
         g = game(sock, server=False, HOST=args.host, PORT=args.port)
     g.startGame()
-
     sock.close()
