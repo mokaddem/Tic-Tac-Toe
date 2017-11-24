@@ -1,6 +1,6 @@
 # Tic-Tac-Toe
 
-A terminal Tic-Tac-Toe over the network.
+A TUI Tic-Tac-Toe.
 
 Two instances must be started:
 - Server: ```./tictactoe.py -s -h REMOTE_HOSTNAME -p REMOTE_PORT```
